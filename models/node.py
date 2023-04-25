@@ -9,6 +9,7 @@ class Node:
 
         parser = self.__get_parser()
         self.__name, self.__keywords = parser.parse()
+        print(self.__name, self.__keywords)
 
     def __get_parser(self):
         if self.__type == 'FEATURE':
