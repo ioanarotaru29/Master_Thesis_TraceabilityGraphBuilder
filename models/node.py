@@ -1,17 +1,6 @@
 from models.utils.gherkin_parser import GherkinParser
 from models.utils.java_parser import JavaParser
 from models.utils.text_sanitizer import TextSanitizer
-import re
-
-
-# def transform(word):
-#     # Underline
-#     new_word = word.replace('_', ' ')
-#     # Camel Case
-#     if not new_word.isupper():
-#         new_word = ' '.join(re.findall(r'[A-Z](?:[a-z]+|[A-Z]*(?=[A-Z]|$))', new_word))
-#     return new_word.lower()
-
 
 class Node:
     def __init__(self, file_location, file_type, sanitizer=None):
@@ -21,7 +10,7 @@ class Node:
 
         self.__parse()
         self.__sanitize()
-        print(self.__name, self.__keywords)
+        # print(self.__name, self.__keywords)
 
     def __get_parser(self):
         if self.__type == 'FEATURE':
