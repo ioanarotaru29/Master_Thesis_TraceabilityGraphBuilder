@@ -43,3 +43,6 @@ class Node:
 
     def name(self):
         return self.__name
+
+    def location(self):
+        return self.__location

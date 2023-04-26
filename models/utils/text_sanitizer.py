@@ -64,4 +64,4 @@ class TextSanitizer:
                 elif token['pos'] in self.ALLOWED_PARTS_OF_SPEECH:
                     sanitized_keywords.append(token['lemma'].lower())
         # print(set(sanitized_keywords))
-        return list(set(sanitized_keywords))
+        return sanitized_keywords
