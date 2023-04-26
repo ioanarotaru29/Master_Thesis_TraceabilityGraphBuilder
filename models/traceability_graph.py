@@ -3,6 +3,7 @@ import os
 import re
 
 from models.node import Node
+from models.utils.text_sanitizer import TextSanitizer
 
 
 class TraceabilityGraph:
@@ -10,6 +11,7 @@ class TraceabilityGraph:
 
     def __init__(self, location):
         self.__location = location
+        self.__sanitizer = TextSanitizer()
         self.nodes = []
         self.edges = []
 
@@ -20,11 +22,11 @@ class TraceabilityGraph:
             return None
 
         if re.search(r'\.feature$', file_path):
-            return Node(file_path, 'FEATURE')
+            return Node(file_path, 'FEATURE', sanitizer=self.__sanitizer)
         elif re.search(r'/src/test/', file_path):
-            return Node(file_path, 'TEST')
+            return Node(file_path, 'TEST', sanitizer=self.__sanitizer)
         elif re.search(r'/src/main/', file_path):
-            return Node(file_path, 'CODE')
+            return Node(file_path, 'CODE', sanitizer=self.__sanitizer)
         else:
             return None
 

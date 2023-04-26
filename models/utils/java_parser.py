@@ -8,7 +8,7 @@ from javalang.tree import ClassCreator
 class JavaParser:
     def __init__(self, location):
         self.__location = location
-        self.__names = []
+        self.__name = ''
         self.__keywords = []
 
         all_classes = inspect.getmembers(javalang.tree, inspect.isclass)
@@ -23,10 +23,11 @@ class JavaParser:
                     self.__parse_type(java_type)
             except javalang.parser.JavaSyntaxError:
                 print(self.__location)
-        return ' '.join(self.__names), list(set(self.__keywords))
+        return self.__name, list(set(self.__keywords))
 
     def __parse_type(self, java_type):
-        self.__names.append(java_type.name)
+        self.__name = java_type.name
+        self.__keywords.append(java_type.name)
 
         extends = getattr(java_type, 'extends', [])
         if isinstance(extends, (list, set, tuple)):
