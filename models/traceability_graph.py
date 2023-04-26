@@ -12,7 +12,7 @@ class TraceabilityGraph:
     def __init__(self, location):
         self.__location = location
         self.__sanitizer = TextSanitizer()
-        self.nodes = []
+        self.nodes = {}
         self.edges = []
 
     def __build_node(self, file_path):
@@ -35,4 +35,7 @@ class TraceabilityGraph:
             for file in files:
                 node = self.__build_node(os.path.join(path, file))
                 if node is not None:
-                    self.nodes.append(node)
+                    if node.type() not in self.nodes.keys():
+                        self.nodes[node.type()] = []
+                    self.nodes[node.type()].append(node)
+

@@ -45,3 +45,12 @@ class Node:
                                            use_entity_recognition=self.__type == 'FEATURE')
         if result is not None:
             self.__keywords = result
+
+    def type(self):
+        return self.__type
+
+    def keywords(self):
+        return self.__keywords
+
+    def name(self):
+        return self.__name
