@@ -1,0 +1,8 @@
+id, name, location
+1, HandlersStepdefs, /Users/ioanarotaru/Desktop/Disertatie/Data/P10_Data_springmvc-router/src/test/java/org/resthub/web/springmvc/router/test/HandlersStepdefs.java
+2, RunCucumberTest, /Users/ioanarotaru/Desktop/Disertatie/Data/P10_Data_springmvc-router/src/test/java/org/resthub/web/springmvc/router/test/RunCucumberTest.java
+3, ReverseRoutingStepdefs, /Users/ioanarotaru/Desktop/Disertatie/Data/P10_Data_springmvc-router/src/test/java/org/resthub/web/springmvc/router/test/ReverseRoutingStepdefs.java
+4, WebAppConfig, /Users/ioanarotaru/Desktop/Disertatie/Data/P10_Data_springmvc-router/src/test/java/org/resthub/web/springmvc/router/javaconfig/WebAppConfig.java
+5, TeapotHandlerInterceptor, /Users/ioanarotaru/Desktop/Disertatie/Data/P10_Data_springmvc-router/src/test/java/org/resthub/web/springmvc/router/support/TeapotHandlerInterceptor.java
+6, BindTestController, /Users/ioanarotaru/Desktop/Disertatie/Data/P10_Data_springmvc-router/src/test/java/org/resthub/web/springmvc/router/controllers/BindTestController.java
+7, MyTestController, /Users/ioanarotaru/Desktop/Disertatie/Data/P10_Data_springmvc-router/src/test/java/org/resthub/web/springmvc/router/controllers/MyTestController.java

@@ -9,11 +9,11 @@ from models.traceability_graph import TraceabilityGraph
 
 if __name__ == '__main__':
     traceability_graph = TraceabilityGraph(
-        # '/Users/ioanarotaru/Desktop/Disertatie/Data/P10_Data_springmvc-router')
-        '/Users/ioanarotaru/Desktop/Disertatie/Data/P10_Data_trivial-graph')
+        '/Users/ioanarotaru/Desktop/Disertatie/Data/P10_Data_springmvc-router')
+        # '/Users/ioanarotaru/Desktop/Disertatie/Data/P10_Data_trivial-graph')
         # #sys.argv[1])
     traceability_graph.build()
-    traceability_graph.export('/Users/ioanarotaru/Desktop/Disertatie/Model/TraceabilityGraphBuilder/out')
+    traceability_graph.export('/Users/ioanarotaru/Desktop/Disertatie/Model/TraceabilityGraphBuilder/out/P10_Data_springmvc-router')
 
 
 # See PyCharm help at https://www.jetbrains.com/help/pycharm/
