@@ -4,6 +4,7 @@ import javalang
 import javalang.parse as Parser
 from javalang.tree import ClassCreator, MethodDeclaration
 
+from models.node import Node
 from models.nodes.test_case import TestCase
 
 
@@ -24,10 +25,12 @@ class JavaTestParser:
                 types = getattr(parsed, 'types', [])
                 for java_type in types:
                     self.__parse_type(java_type)
-                return TestCase(self.__location,
-                                self.__name,
-                                self.__keywords + list(self.__annotatated_keywords.values())
-                                ), self.__keywords, self.__annotatated_keywords
+                return Node('TEST_CASE',
+                            self.__location,
+                            self.__name,
+                            [],
+                            self.__keywords + list(self.__annotatated_keywords.values())
+                            ), self.__keywords, self.__annotatated_keywords
             except javalang.parser.JavaSyntaxError:
                 print(self.__location)
         return None

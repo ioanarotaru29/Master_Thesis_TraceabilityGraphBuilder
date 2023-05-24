@@ -4,7 +4,7 @@ import re
 
 from gensim.models import Word2Vec
 
-from models.nodes.edge import Edge
+from models.edge import Edge
 from models.utils.gherkin_parser import GherkinParser
 from models.utils.java_class_parser import JavaClassParser
 from models.utils.java_test_parser import JavaTestParser
@@ -27,7 +27,8 @@ class TraceabilityGraph:
         }
         self.edges = {
             'REQUIREMENTS_TO_TEST_CASES': [],
-            'TEST_CASES_TO_SOURCE_CODE': []
+            'TEST_CASES_TO_SOURCE_CODE': [],
+            'TEST_CASES_TO_FAULTS': []
         }
 
     def build(self):
@@ -46,26 +47,9 @@ class TraceabilityGraph:
                         self.__parseTestCodeFile(file_path)
 
         print("Sanitize project files...")
-        for req in self.nodes['REQUIREMENTS']:
-            sentence = ' '.join(req.sentences)
-            result = self.__sanitizer.sanitize(sentence, use_transform=False, use_entity_recognition=True) or []
-            if len(result) > 0:
-                req.sentences = result
-
-        for test in self.nodes['TEST_CASES']:
-            sentence = ' '.join(test.sentences)
-            code_sentence = ' '.join(test.code_sentences)
-            result = self.__sanitizer.sanitize(sentence, use_transform=False, use_entity_recognition=True) or []
-            code_result = self.__sanitizer.sanitize(code_sentence, use_transform=True, use_entity_recognition=False) or []
-            final_result = result + code_result
-            if len(final_result) > 0:
-                test.sentences = final_result
-
-        for source_code in self.nodes['SOURCE_CODE']:
-            sentence = ' '.join(source_code.sentences)
-            result = self.__sanitizer.sanitize(sentence, use_transform=True, use_entity_recognition=False) or []
-            if len(result) > 0:
-                source_code.sentences = result
+        for _, nodes in self.nodes.items():
+            for node in nodes:
+                self.__sanitize_node(node)
 
         print("Detect dependencies...")
         sentences = []
@@ -107,6 +91,15 @@ class TraceabilityGraph:
                     test.code_sentences += general_sentences
         elif test_case.name.endswith('Test'):
             self.nodes['TEST_CASES'].append(test_case)
+
+    def __sanitize_node(self, node):
+        sentence = ' '.join(node.sentences)
+        code_sentence = ' '.join(node.code_sentences)
+        result = self.__sanitizer.sanitize(sentence, use_transform=False, use_entity_recognition=True) or []
+        code_result = self.__sanitizer.sanitize(code_sentence, use_transform=True, use_entity_recognition=False) or []
+        final_result = result + code_result
+        if len(final_result) > 0:
+            node.sentences = final_result
 
     def __build_dependencies(self, source_type, target_type):
         print("FROM:", source_type, " TO:", target_type)

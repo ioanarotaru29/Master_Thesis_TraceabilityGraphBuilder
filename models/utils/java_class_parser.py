@@ -4,6 +4,7 @@ import javalang
 import javalang.parse as Parser
 from javalang.tree import ClassCreator
 
+from models.node import Node
 from models.nodes.souce_code import SourceCode
 
 
@@ -23,7 +24,7 @@ class JavaClassParser:
                 types = getattr(parsed, 'types', [])
                 for java_type in types:
                     self.__parse_type(java_type)
-                return SourceCode(self.__location, self.__name, list(set(self.__keywords)))
+                return Node('SOURCE_CODE', self.__location, self.__name, [], list(set(self.__keywords)))
             except javalang.parser.JavaSyntaxError:
                 print(self.__location)
         return None

@@ -1,6 +1,7 @@
 from gherkin.parser import Parser
 from gherkin.token_scanner import TokenScanner
 
+from models.node import Node
 from models.nodes.requirement import Requirement
 from models.nodes.test_case import TestCase
 
@@ -34,7 +35,10 @@ class GherkinParser:
             if scenario_hash.get('keyword') == 'Background':
                 background_sentences = sentences
             elif scenario_hash.get('keyword') == 'Scenario':
-                test_cases.append(TestCase(self.__location, scenario_hash.get('name'), background_sentences + sentences + [scenario_hash.get('name')]))
+                test_cases.append(Node('TEST_CASE',
+                                       self.__location,
+                                       scenario_hash.get('name'),
+                                       background_sentences + sentences + [scenario_hash.get('name')]))
         return test_cases
 
     def parse(self):
@@ -49,9 +53,11 @@ class GherkinParser:
             for test_case in test_cases:
                 sentences += test_case.sentences
                 test_case.sentences.append(content.get('name'))
-            req = Requirement(self.__location,
-                              content.get('name'),
-                              sentences
-                              )
+                test_case.name = content.get('name') + '.' + test_case.name
+            req = Node('REQUIREMENT',
+                       self.__location,
+                       content.get('name'),
+                       sentences
+                       )
             return req, test_cases
         return None, []
