@@ -4,6 +4,3 @@ class TestCase:
         self.name = name
         self.sentences = sentences
         self.code_sentences = []
-
-    def add_implementation(self):
-        pass

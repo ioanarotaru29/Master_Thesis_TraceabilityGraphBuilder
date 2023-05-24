@@ -4,6 +4,7 @@ import re
 
 from models.utils.gherkin_parser import GherkinParser
 from models.utils.java_class_parser import JavaClassParser
+from models.utils.java_test_parser import JavaTestParser
 
 
 class TraceabilityGraph:
@@ -29,6 +30,8 @@ class TraceabilityGraph:
                         self.__parseFeatureFile(file_path)
                     elif re.search(r'/src/main/', file_path):
                         self.__parseSourceCodeFile(file_path)
+                    elif re.search(r'/src/test/', file_path):
+                        self.__parseTestCodeFile(file_path)
 
     def __parseFeatureFile(self, file_path):
         parser = GherkinParser(file_path)
@@ -43,3 +46,19 @@ class TraceabilityGraph:
         source_code = parser.parse()
         if source_code is not None:
             self.nodes['SOURCE_CODE'].append(source_code)
+
+    def __parseTestCodeFile(self, file_path):
+        parser = JavaTestParser(file_path)
+        test_case, general_sentences, annotated_sentences = parser.parse()
+        if len(annotated_sentences.keys()) > 0:
+            for test in self.nodes['TEST_CASES']:
+                keywords_to_add = []
+                for sentence, keywords in annotated_sentences.items():
+                    sentence = sentence.replace('"^', '^').replace('$"', '$')
+                    if len(list(filter(lambda s: re.match(sentence, s), test.sentences))) > 0:
+                        keywords_to_add += keywords
+                if len(keywords_to_add) > 0:
+                    test.code_sentences += keywords_to_add
+                    test.code_sentences += general_sentences
+        elif test_case.name.endswith('Test'):
+            self.nodes['TEST_CASES'].append(test_case)
