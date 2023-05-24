@@ -34,7 +34,7 @@ class GherkinParser:
             if scenario_hash.get('keyword') == 'Background':
                 background_sentences = sentences
             elif scenario_hash.get('keyword') == 'Scenario':
-                test_cases.append(TestCase(self.__location, scenario_hash.get('name'), background_sentences + sentences))
+                test_cases.append(TestCase(self.__location, scenario_hash.get('name'), background_sentences + sentences + [scenario_hash.get('name')]))
         return test_cases
 
     def parse(self):
@@ -42,10 +42,16 @@ class GherkinParser:
 
         content = parsed_hash.get('feature')
         if content:
+            test_cases = self.__parse_scenarios(content.get('children') or {})
+            sentences = []
+            sentences.append(content.get('name'))
+            sentences += content.get('description').split('\n')
+            for test_case in test_cases:
+                sentences += test_case.sentences
+                test_case.sentences.append(content.get('name'))
             req = Requirement(self.__location,
                               content.get('name'),
-                              content.get('description')
+                              sentences
                               )
-            test_cases = self.__parse_scenarios(content.get('children') or {})
             return req, test_cases
         return None, []

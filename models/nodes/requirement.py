@@ -1,5 +1,5 @@
 class Requirement:
-    def __init__(self, location, name, description):
+    def __init__(self, location, name, sentences):
         self.location = location
         self.name = name
-        self.sentences = description.split('\n')
+        self.sentences = sentences
