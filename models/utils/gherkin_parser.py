@@ -2,8 +2,6 @@ from gherkin.parser import Parser
 from gherkin.token_scanner import TokenScanner
 
 from models.node import Node
-from models.nodes.requirement import Requirement
-from models.nodes.test_case import TestCase
 
 
 class GherkinParser:

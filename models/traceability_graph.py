@@ -9,13 +9,18 @@ from models.utils.gherkin_parser import GherkinParser
 from models.utils.java_class_parser import JavaClassParser
 from models.utils.java_test_parser import JavaTestParser
 from models.utils.text_sanitizer import TextSanitizer
+from models.utils.xml_results_parser import XmlResultsParser
 
 
 class TraceabilityGraph:
     FILES_TO_INCLUDE = ['*.feature', '*.java']
 
-    def __init__(self, location, window=5, min_count=1, epochs=25):
+    def __init__(self, location, test_results_location=None, mutations_location=None, 
+                 window=5, min_count=1, epochs=25):
         self.__location = location
+        self.__test_results_location = test_results_location
+        self.__mutations_location = mutations_location
+        
         self.__sanitizer = TextSanitizer()
         self.__model = Word2Vec(window=window, min_count=min_count)
         self.__epochs = epochs
@@ -46,6 +51,9 @@ class TraceabilityGraph:
                     elif re.search(r'/src/test/', file_path):
                         self.__parseTestCodeFile(file_path)
 
+        if self.__test_results_location is not None:
+            self.__parseTestResults()
+        
         print("Sanitize project files...")
         for _, nodes in self.nodes.items():
             for node in nodes:
@@ -110,3 +118,11 @@ class TraceabilityGraph:
 
                 self.edges[source_type + "_TO_" + target_type].append(edge)
                 print(source_node.name, target_node.name, sim)
+
+    def __parseTestResults(self):
+        parser = XmlResultsParser(self.__test_results_location)
+        durations, faults = parser.parse()
+        for name, duration in durations.items():
+            node = next(filter(lambda x: x.name == name, self.nodes['TEST_CASES']), None)
+            if node is not None:
+                node.duration = duration

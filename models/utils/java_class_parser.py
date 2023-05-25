@@ -5,7 +5,6 @@ import javalang.parse as Parser
 from javalang.tree import ClassCreator
 
 from models.node import Node
-from models.nodes.souce_code import SourceCode
 
 
 class JavaClassParser:
