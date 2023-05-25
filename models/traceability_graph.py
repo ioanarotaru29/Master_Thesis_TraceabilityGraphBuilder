@@ -5,11 +5,12 @@ import re
 from gensim.models import Word2Vec
 
 from models.edge import Edge
-from models.utils.gherkin_parser import GherkinParser
-from models.utils.java_class_parser import JavaClassParser
-from models.utils.java_test_parser import JavaTestParser
+from models.utils.parsers.gherkin_parser import GherkinParser
+from models.utils.parsers.java_class_parser import JavaClassParser
+from models.utils.parsers.java_test_parser import JavaTestParser
+from models.utils.parsers.xml_mutations_parser import XmlMutationsParser
 from models.utils.text_sanitizer import TextSanitizer
-from models.utils.xml_results_parser import XmlResultsParser
+from models.utils.parsers.xml_results_parser import XmlResultsParser
 
 
 class TraceabilityGraph:
@@ -53,7 +54,9 @@ class TraceabilityGraph:
                         self.__parseTestCodeFile(file_path)
 
         if self.__test_results_location is not None:
-            self.__parseTestResults()
+            self.__parseTestResultsFile()
+        if self.__mutations_location is not None:
+            self.__parseMutationsFile()
         
         print("Sanitize project files...")
         for _, nodes in self.nodes.items():
@@ -159,7 +162,7 @@ class TraceabilityGraph:
 
                 self.edges[source_type + "_TO_" + target_type].append(edge)
 
-    def __parseTestResults(self):
+    def __parseTestResultsFile(self):
         parser = XmlResultsParser(self.__test_results_location)
         durations, faults = parser.parse()
         for test_case in self.nodes['TEST_CASES']:
@@ -170,5 +173,16 @@ class TraceabilityGraph:
                 for test_fault in test_faults:
                     self.edges['TEST_CASES_TO_FAULTS'].append(Edge(test_case, test_fault))
 
+        for v in faults.values():
+            self.nodes['FAULTS'] += v
+
+    def __parseMutationsFile(self):
+        parser = XmlMutationsParser(self.__mutations_location)
+        faults = parser.parse()
+        for test_case in self.nodes['TEST_CASES']:
+            if test_case.name in faults.keys():
+                test_faults = faults[test_case.name]
+                for test_fault in test_faults:
+                    self.edges['TEST_CASES_TO_FAULTS'].append(Edge(test_case, test_fault))
         for v in faults.values():
             self.nodes['FAULTS'] += v

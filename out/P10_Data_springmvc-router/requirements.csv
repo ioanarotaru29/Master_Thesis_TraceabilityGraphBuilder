@@ -1,0 +1,6 @@
+id, name, location
+1, HATEOAS support, /Users/ioanarotaru/Desktop/Disertatie/Data/P10_Data_springmvc-router/src/test/resources/org/resthub/web/springmvc/router/test/hateoas.feature
+2, java config support, /Users/ioanarotaru/Desktop/Disertatie/Data/P10_Data_springmvc-router/src/test/resources/org/resthub/web/springmvc/router/test/javaconfig.feature
+3, Handler adapter support, /Users/ioanarotaru/Desktop/Disertatie/Data/P10_Data_springmvc-router/src/test/resources/org/resthub/web/springmvc/router/test/handler_adapter.feature
+4, Reverse routing support, /Users/ioanarotaru/Desktop/Disertatie/Data/P10_Data_springmvc-router/src/test/resources/org/resthub/web/springmvc/router/test/reverse_routing.feature
+5, Handler mapping support, /Users/ioanarotaru/Desktop/Disertatie/Data/P10_Data_springmvc-router/src/test/resources/org/resthub/web/springmvc/router/test/handler_mapping.feature
