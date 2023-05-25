@@ -28,7 +28,8 @@ class TraceabilityGraph:
         self.nodes = {
             'REQUIREMENTS': [],
             'TEST_CASES': [],
-            'SOURCE_CODE': []
+            'SOURCE_CODE': [],
+            'FAULTS': []
         }
         self.edges = {
             'REQUIREMENTS_TO_TEST_CASES': [],
@@ -69,6 +70,44 @@ class TraceabilityGraph:
         self.__build_dependencies('REQUIREMENTS', 'TEST_CASES')
         self.__build_dependencies('TEST_CASES', 'SOURCE_CODE')
 
+    def export(self, path):
+        for node_type in ['REQUIREMENTS', 'TEST_CASES', 'SOURCE_CODE', 'FAULTS']:
+            self.export_nodes(path, node_type)
+        self.export_dependencies(path, 'REQUIREMENTS', 'TEST_CASES')
+        self.export_dependencies(path, 'TEST_CASES', 'SOURCE_CODE')
+        self.export_dependencies(path, 'TEST_CASES', 'FAULTS')
+
+    def export_nodes(self, path, node_type):
+        with open(os.path.join(path, node_type.lower() + '.csv'), 'w') as f:
+            header = 'id, name, location\n'
+            if node_type == 'TEST_CASES':
+                header = 'id, name, location, duration\n'
+            f.write(header)
+
+            nodes = self.nodes.get(node_type)
+            for idx, node in enumerate(nodes):
+                fields = [str(idx + 1), node.name, node.location]
+                if node_type == 'TEST_CASES':
+                    fields.append(str(node.duration))
+                f.write(', '.join(fields) + '\n')
+
+    def export_dependencies(self, path, source_type, target_type):
+        with open(os.path.join(path, source_type.lower() + '_to_' + target_type.lower() + '.csv'), 'w') as f:
+            header = 'source_id, target_id, cosine_similarity\n'
+            if target_type == 'FAULTS':
+                header = 'source_id, target_id\n'
+            f.write(header)
+
+            edges = self.edges[source_type + '_TO_' + target_type]
+            for edge in edges:
+                source_idx = self.nodes.get(source_type).index(edge.source)
+                target_idx = self.nodes.get(target_type).index(edge.target)
+                sim = edge.similarity
+                fields = [str(source_idx + 1), str(target_idx + 1)]
+                if not target_type == 'FAULTS':
+                    fields.append(str(sim))
+                f.write(', '.join(fields) + '\n')
+
 
     def __parseFeatureFile(self, file_path):
         parser = GherkinParser(file_path)
@@ -101,6 +140,8 @@ class TraceabilityGraph:
             self.nodes['TEST_CASES'].append(test_case)
 
     def __sanitize_node(self, node):
+        if node.type == 'FAULT':
+            return
         sentence = ' '.join(node.sentences)
         code_sentence = ' '.join(node.code_sentences)
         result = self.__sanitizer.sanitize(sentence, use_transform=False, use_entity_recognition=True) or []
@@ -117,12 +158,17 @@ class TraceabilityGraph:
                 edge = Edge(source_node, target_node, sim)
 
                 self.edges[source_type + "_TO_" + target_type].append(edge)
-                print(source_node.name, target_node.name, sim)
 
     def __parseTestResults(self):
         parser = XmlResultsParser(self.__test_results_location)
         durations, faults = parser.parse()
-        for name, duration in durations.items():
-            node = next(filter(lambda x: x.name == name, self.nodes['TEST_CASES']), None)
-            if node is not None:
-                node.duration = duration
+        for test_case in self.nodes['TEST_CASES']:
+            if test_case.name in durations.keys():
+                test_case.duration = durations[test_case.name]
+            if test_case.name in faults.keys():
+                test_faults = faults[test_case.name]
+                for test_fault in test_faults:
+                    self.edges['TEST_CASES_TO_FAULTS'].append(Edge(test_case, test_fault))
+
+        for v in faults.values():
+            self.nodes['FAULTS'] += v

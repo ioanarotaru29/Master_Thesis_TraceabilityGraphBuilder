@@ -1,0 +1,7 @@
+id, name, location
+1, Trivialt Questions, /Users/ioanarotaru/Desktop/Disertatie/Data/P10_Data_trivial-graph/neo4j/features/questions.feature
+2, Free-form Questions, /Users/ioanarotaru/Desktop/Disertatie/Data/P10_Data_trivial-graph/neo4j/features/freeform_questions.feature
+3, Trivialt Graph Application, /Users/ioanarotaru/Desktop/Disertatie/Data/P10_Data_trivial-graph/neo4j/features/app.feature
+4, Playing one round of a match, /Users/ioanarotaru/Desktop/Disertatie/Data/P10_Data_trivial-graph/neo4j/features/round_play.feature
+5, Trivialt Players and Teams, /Users/ioanarotaru/Desktop/Disertatie/Data/P10_Data_trivial-graph/neo4j/features/team_players.feature
+6, Playing a Trivialt match, /Users/ioanarotaru/Desktop/Disertatie/Data/P10_Data_trivial-graph/neo4j/features/match_play.feature

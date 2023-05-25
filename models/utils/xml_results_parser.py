@@ -25,5 +25,11 @@ class XmlResultsParser:
                 if re.search(name + '\.', c_name) is None:
                     c_name = name + '.' + c_name
                 self.__durations[c_name] = child.get('duration')
+
+                if child.get("status") == "failed":
+                    fault = Node('FAULT', '', '')
+                    if c_name not in self.__faults.keys():
+                        self.__faults[c_name] = []
+                    self.__faults[c_name].append(fault)
             if child.tag == 'suite':
                 self.__parse_level(child)

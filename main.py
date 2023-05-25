@@ -8,7 +8,7 @@ if __name__ == '__main__':
     graph = TraceabilityGraph("/Users/ioanarotaru/Desktop/Disertatie/Data/P10_Data_trivial-graph/neo4j",
                               test_results_location="/Users/ioanarotaru/Desktop/Disertatie/Data/P10_Data_trivial-graph/Test Results - All_Features_in__features.xml")
     graph.build()
-    print(graph.nodes)
+    graph.export("/Users/ioanarotaru/Desktop/Disertatie/Model/TraceabilityGraphBuilder_Version2/out/P10_Data_trivial-graph")
 
     # parser = XmlResultsParser("/Users/ioanarotaru/Desktop/Disertatie/Data/P10_Data_trivial-graph/Test Results - All_Features_in__features.xml")
     # parser.parse()
